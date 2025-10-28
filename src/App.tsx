@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import "./index.css";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const Navbar: React.FC = () => {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <nav className="navbar">
+      <h1 className="logo">FlowState</h1>
+      <ul className="nav-links">
+        <li><a href="#Study Methods">Study Methods</a></li>
+        <li><a href="#account">Account</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+    </nav>
+  );
+};
 
-export default App
+const LandingPage: React.FC = () => {
+  return (
+    <section className="hero">
+      <h2>Find Your Flow</h2>
+      <p>Guided study sessions that help you stay focused and productive.</p>
+      <button className="cta">Get Started</button>
+    </section>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <div>
+      <Navbar />
+      <LandingPage />
+    </div>
+  );
+};
+
+export default App;
+
