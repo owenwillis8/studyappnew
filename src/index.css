@@ -1,1 +1,17 @@
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-img {
+  height: 48px; /* adjust size as needed */
+  width: 48px;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
 

@@ -1,18 +1,24 @@
 import React from "react";
 import "./index.css";
+import logo from "./assets/logo.png"; 
 
 const Navbar: React.FC = () => {
   return (
     <nav className="navbar">
-      <h1 className="logo">FlowState</h1>
+      <div className="logo-container">
+        <img src={logo} alt="Flow State logo" className="logo-img" />
+        <h1 className="logo-text">Flow State</h1>
+      </div>
+
       <ul className="nav-links">
-        <li><a href="#Study Methods">Study Methods</a></li>
-        <li><a href="#account">Account</a></li>
-        <li><a href="#about">About</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
   );
 };
+
 
 const LandingPage: React.FC = () => {
   return (
