@@ -9,7 +9,7 @@ const studyMethods: StudyMethod[] = [
   {
     name: "Pomodoro Technique",
     description:
-      "Work in focused 25 or 50 minute intervals followed by short breaks to maintain energy and concentration.",
+      "Work in focused 25 minute intervals followed by short breaks to maintain energy and concentration.",
   }
 ];
 

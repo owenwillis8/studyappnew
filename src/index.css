@@ -13,5 +13,123 @@
 
 
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+
+body {
+  background-color: #000000;
+  color: #111827;
+  line-height: 1.5;
+}
+
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: rgb(0, 0, 0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+
+.logo-img {
+  height: 40px;
+  width: 40px;
+}
+
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #4f46e5;
+}
+
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+
+.nav-links a {
+  color: #374151;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+
+.nav-links a:hover {
+  color: #4f46e5;
+}
+
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem;
+  text-align: center;
+  background: rgb(180deg, #fdf6f6 0%, #b3b0b0 100%);
+}
+
+
+.hero h2 {
+  font-size: 3rem;
+  color: #4e6689;
+  margin-bottom: 1rem;
+}
+
+
+.hero p {
+  max-width: 600px;
+  color: #7d8999;
+  margin-bottom: 2rem;
+  font-size: 1.125rem;
+}
+
+
+.cta {
+  background: #4f46e5;
+  color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 9999px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+
+.cta:hover {
+  background: #4338ca;
+  transform: scale(1.05);
+}
+
+
 
 

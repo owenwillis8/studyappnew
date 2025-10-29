@@ -28,7 +28,7 @@ const LandingPage: React.FC = () => {
     <section className="hero">
       <h2>Find Your Flow</h2>
       <p>Guided study sessions that help you stay focused and productive.</p>
-      <Link to="/methods">
+      <Link to="/account">
       <button className="cta">Get Started</button>
       </Link>
     </section>
