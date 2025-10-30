@@ -2,7 +2,8 @@ import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import "./index.css";
 import logo from "./assets/logo.png"; 
-import Features from "./pages/Features";
+import Features from "./Features.tsx";
+import AuthPage from "./AuthPage";
 
 const Navbar: React.FC = () => {
   return (
@@ -42,10 +43,10 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/methods" element={<Features />} />
+        <Route path="/account" element={<AuthPage />} />
       </Routes>
     </>
   );
 };
 
 export default App;
-
