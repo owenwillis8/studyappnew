@@ -1,5 +1,4 @@
 import React from "react";
-
 interface StudyMethod {
   name: string;
   description: string;
