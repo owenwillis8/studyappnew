@@ -5,6 +5,7 @@ import Features from "./Features";
 import AuthPage from "./AuthPage";
 import { supabase } from "../supabaseClient";
 import type { User } from "@supabase/supabase-js";
+import "../Pages/homepage.css";
 
 const LandingPage: React.FC = () => (
   <section className="hero">

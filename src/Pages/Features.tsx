@@ -1,4 +1,5 @@
 import React from "react";
+import "../Pages/features.css";
 interface StudyMethod {
   name: string;
   description: string;

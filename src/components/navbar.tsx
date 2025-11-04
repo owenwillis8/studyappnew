@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import "../components/navbar.css";
+import logo from "../assets/logo.png"
 
 interface NavbarProps {
   user: any | null;
@@ -9,6 +11,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
   return (
     <nav className="navbar">
       <div className="logo-container">
+        <img src={logo} alt="FlowState logo" className="logo-img" />
         <h1 className="logo-text">FlowState</h1>
       </div>
 

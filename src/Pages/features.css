@@ -1,0 +1,91 @@
+.methods-page {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+
+.methods-page h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #667798;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+
+.methods-subtitle {
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+
+.methods-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+
+.method-card {
+  background: rgb(18, 19, 21);
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 2rem 1.5rem;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.method-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+.method-card h3 {
+  color: #4338ca;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+}
+
+
+.method-card p {
+  color: #374151;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+
+.method-btn {
+  background: #4338ca;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+
+.method-btn:hover {
+  background: #4338ca;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+
+  .hero h2 {
+    font-size: 2.25rem;
+  }
+
+
+  .hero p {
+    font-size: 1rem;
+  }
+}

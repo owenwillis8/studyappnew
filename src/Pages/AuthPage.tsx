@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { supabase } from "../supabaseClient";
-
+import "../Pages/AuthPage.css";
 
 export default function AuthPage() {
   const [email, setEmail] = useState<string>("");
