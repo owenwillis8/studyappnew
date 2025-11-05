@@ -6,6 +6,7 @@ import AuthPage from "./AuthPage";
 import { supabase } from "../supabaseClient";
 import type { User } from "@supabase/supabase-js";
 import "../Pages/homepage.css";
+import Pomodoro from "../Pages/Pomodoro";
 
 const LandingPage: React.FC = () => (
   <section className="hero">
@@ -47,6 +48,7 @@ useEffect(() => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/methods" element={<Features />} />
         <Route path="/account" element={<AuthPage />} />
+        <Route path="/pomodoro" element={<Pomodoro />} />
       </Routes>
     </>
   );

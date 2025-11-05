@@ -1,5 +1,6 @@
 import React from "react";
 import "../Pages/features.css";
+import { Link } from "react-router-dom";
 interface StudyMethod {
   name: string;
   description: string;
@@ -25,7 +26,9 @@ const Methods: React.FC = () => {
           <div key={method.name} className="method-card">
             <h3>{method.name}</h3>
             <p>{method.description}</p>
+            <Link to="/Pomodoro">
             <button className="method-btn">Try This Method</button>
+            </Link>
           </div>
         ))}
       </div>
