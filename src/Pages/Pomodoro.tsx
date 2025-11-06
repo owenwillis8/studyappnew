@@ -1,43 +1,76 @@
-import React, { useState, useEffect, useRef } from "react";
-import "../Pages/Pomodoro.css";
 
-const WORK_TIME = 25 * 60; 
-const BREAK_TIME = 5 * 60;
+import React, { useEffect, useRef, useState } from "react";
+import "../Pages/Pomodoro.css";
+import rainSound from "../assets/rain.mp3"; 
 
 const Pomodoro: React.FC = () => {
-  const [secondsLeft, setSecondsLeft] = useState(WORK_TIME);
-  const [isActive, setIsActive] = useState(false);
-  const [onBreak, setOnBreak] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(25 * 60);
+  const [isRunning, setIsRunning] = useState(false);
+  const [isBreak, setIsBreak] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+
+  const [breathPhase, setBreathPhase] = useState<"inhale" | "hold" | "exhale">("inhale");
+  const [breathCounter, setBreathCounter] = useState(4);
 
 
   useEffect(() => {
-    if (isActive) {
+    if (isRunning && !isBreak) {
       intervalRef.current = setInterval(() => {
         setSecondsLeft((prev) => {
-          if (prev === 1) {
-            setOnBreak((prevMode) => !prevMode);
-            return onBreak ? WORK_TIME : BREAK_TIME;
+          if (prev <= 1) {
+            clearInterval(intervalRef.current!);
+            setIsBreak(true);
+            setSecondsLeft(5 * 60);
+            return 0;
           }
           return prev - 1;
         });
       }, 1000);
+    } else {
+      clearInterval(intervalRef.current!);
     }
 
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [isActive, onBreak]);
+    return () => clearInterval(intervalRef.current!);
+  }, [isRunning, isBreak]);
+
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+    if (isRunning && !isBreak) {
+      audioRef.current.play();
+    } else {
+      audioRef.current.pause();
+    }
+  }, [isRunning, isBreak]);
+
+
+  useEffect(() => {
+    if (isBreak) {
+      const breathInterval = setInterval(() => {
+        setBreathCounter((prev) => {
+          if (prev <= 1) {
+            if (breathPhase === "inhale") setBreathPhase("hold");
+            else if (breathPhase === "hold") setBreathPhase("exhale");
+            else if (breathPhase === "exhale") setBreathPhase("inhale");
+            return 4;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(breathInterval);
+    }
+  }, [isBreak, breathPhase]);
 
   const toggleTimer = () => {
-    setIsActive(!isActive);
+    setIsRunning((prev) => !prev);
   };
 
   const resetTimer = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    setIsActive(false);
-    setOnBreak(false);
-    setSecondsLeft(WORK_TIME);
+    setSecondsLeft(25 * 60);
+    setIsRunning(false);
+    setIsBreak(false);
   };
 
   const formatTime = (seconds: number) => {
@@ -50,22 +83,30 @@ const Pomodoro: React.FC = () => {
 
   return (
     <div className="pomodoro-page">
-      <div className="pomodoro-container">
-        <h1 className="pomodoro-title">Pomodoro Timer</h1>
-        <h2 className={`session-label ${onBreak ? "break" : "focus"}`}>
-          {onBreak ? "Break Time" : "Focus Time"}
-        </h2>
-        <div className="timer-display">{formatTime(secondsLeft)}</div>
+      <audio ref={audioRef} src={rainSound} loop />
 
-        <div className="button-group">
-          <button onClick={toggleTimer} className="btn primary">
-            {isActive ? "Pause" : "Start"}
-          </button>
-          <button onClick={resetTimer} className="btn secondary">
-            Reset
-          </button>
+      <h2>Pomodoro Timer</h2>
+
+      {!isBreak ? (
+        <>
+          <div className="timer">{formatTime(secondsLeft)}</div>
+          <div className="controls">
+            <button onClick={toggleTimer} className="cta">
+              {isRunning ? "Pause" : "Start"}
+            </button>
+            <button onClick={resetTimer} className="reset-btn">
+              Reset
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="breathing-session">
+          <h3>Take a Guided Break 🌿</h3>
+          <p className="phase">{breathPhase.toUpperCase()}</p>
+          <div className={`breath-circle ${breathPhase}`}></div>
+          <p className="counter">{breathCounter}s</p>
         </div>
-      </div>
+      )}
     </div>
   );
 };
