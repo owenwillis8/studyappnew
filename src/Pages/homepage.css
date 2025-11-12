@@ -7,7 +7,7 @@
   text-align: center;
   padding: 0 2rem;
   background: linear-gradient(135deg, #0b0d15, #1e1f29);
-  color: #f8f9fa;
+  color: #f8f8f8;
 }
 
 
@@ -15,7 +15,7 @@
   font-size: 4.5rem;
   font-weight: 800;
   margin-bottom: 1.2rem;
-  color: #ffffff;
+  color: #c2c2c2;
   letter-spacing: 1px;
   text-transform: uppercase;
   position: relative;
@@ -38,7 +38,7 @@
 .cta {
   background: linear-gradient(90deg, #6366f1, #8b5cf6);
   border: none;
-  color: #fff;
+  color: #ffffff;
   font-size: 1.1rem;
   font-weight: 600;
   padding: 1rem 2.5rem;

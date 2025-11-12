@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import "../Pages/AuthPage.css";
 
@@ -8,6 +9,29 @@ export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const navigate = useNavigate();
+
+   
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        navigate("/account");
+      }
+    };
+    checkSession();
+
+    
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session) navigate("/account");
+      }
+    );
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   const handleAuth = async (e: FormEvent) => {
     e.preventDefault();
