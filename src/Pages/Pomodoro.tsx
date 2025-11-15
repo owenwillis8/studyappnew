@@ -1,7 +1,8 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import "../Pages/Pomodoro.css";
 import rainSound from "../assets/rain.mp3"; 
+import { supabase } from "../supabaseClient";
+import SessionFeedback from "../components/SessionFeedback";
 
 const Pomodoro: React.FC = () => {
   const [secondsLeft, setSecondsLeft] = useState(25 * 60);
@@ -14,6 +15,29 @@ const Pomodoro: React.FC = () => {
   const [breathPhase, setBreathPhase] = useState<"inhale" | "hold" | "exhale">("inhale");
   const [breathCounter, setBreathCounter] = useState(4);
 
+  const [showFeedback, setShowFeedback] = useState(false);
+
+
+  const totalMinutes = 25;
+  const user = supabase.auth.getUser(); 
+
+  const handleSessionEnd = () => {
+    setShowFeedback(true);
+  };
+
+  const handleFeedbackSubmit = async (answers: any) => {
+    const { data: authData } = await user;
+    if (!authData?.user) return;
+
+    await supabase.from("sessions").insert({
+      user_id: authData.user.id,
+      duration_minutes: totalMinutes,
+      ...answers,
+    });
+
+    setShowFeedback(false);
+    alert("Session saved successfully!");
+  };
 
   useEffect(() => {
     if (isRunning && !isBreak) {
@@ -23,6 +47,7 @@ const Pomodoro: React.FC = () => {
             clearInterval(intervalRef.current!);
             setIsBreak(true);
             setSecondsLeft(5 * 60);
+            handleSessionEnd(); // 
             return 0;
           }
           return prev - 1;
@@ -35,16 +60,11 @@ const Pomodoro: React.FC = () => {
     return () => clearInterval(intervalRef.current!);
   }, [isRunning, isBreak]);
 
-
   useEffect(() => {
     if (!audioRef.current) return;
-    if (isRunning && !isBreak) {
-      audioRef.current.play();
-    } else {
-      audioRef.current.pause();
-    }
+    if (isRunning && !isBreak) audioRef.current.play();
+    else audioRef.current.pause();
   }, [isRunning, isBreak]);
-
 
   useEffect(() => {
     if (isBreak) {
@@ -53,7 +73,7 @@ const Pomodoro: React.FC = () => {
           if (prev <= 1) {
             if (breathPhase === "inhale") setBreathPhase("hold");
             else if (breathPhase === "hold") setBreathPhase("exhale");
-            else if (breathPhase === "exhale") setBreathPhase("inhale");
+            else setBreathPhase("inhale");
             return 4;
           }
           return prev - 1;
@@ -63,23 +83,15 @@ const Pomodoro: React.FC = () => {
     }
   }, [isBreak, breathPhase]);
 
-  const toggleTimer = () => {
-    setIsRunning((prev) => !prev);
-  };
-
+  const toggleTimer = () => setIsRunning((prev) => !prev);
   const resetTimer = () => {
     setSecondsLeft(25 * 60);
     setIsRunning(false);
     setIsBreak(false);
   };
 
-  const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60)
-      .toString()
-      .padStart(2, "0");
-    const s = (seconds % 60).toString().padStart(2, "0");
-    return `${m}:${s}`;
-  };
+  const formatTime = (seconds: number) =>
+    `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
 
   return (
     <div className="pomodoro-page">
@@ -106,6 +118,11 @@ const Pomodoro: React.FC = () => {
           <div className={`breath-circle ${breathPhase}`}></div>
           <p className="counter">{breathCounter}s</p>
         </div>
+      )}
+
+      {}
+      {showFeedback && (
+        <SessionFeedback onSubmit={handleFeedbackSubmit} />
       )}
     </div>
   );
