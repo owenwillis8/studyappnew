@@ -66,22 +66,43 @@ const Pomodoro: React.FC = () => {
     else audioRef.current.pause();
   }, [isRunning, isBreak]);
 
-  useEffect(() => {
-    if (isBreak) {
-      const breathInterval = setInterval(() => {
-        setBreathCounter((prev) => {
-          if (prev <= 1) {
-            if (breathPhase === "inhale") setBreathPhase("hold");
-            else if (breathPhase === "hold") setBreathPhase("exhale");
-            else setBreathPhase("inhale");
-            return 4;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-      return () => clearInterval(breathInterval);
+  
+useEffect(() => {
+  if (!isBreak) return;
+
+  let totalBreakSeconds = 5 * 60; 
+  setBreathPhase("inhale");
+  setBreathCounter(4);
+
+  const breathInterval = setInterval(() => {
+    totalBreakSeconds--;
+
+    
+    if (totalBreakSeconds <= 0) {
+      clearInterval(breathInterval);
+      setIsBreak(false);           
+      setSecondsLeft(25 * 60);     
+      setIsRunning(false);         
+      return;
     }
-  }, [isBreak, breathPhase]);
+
+    
+    setBreathCounter((prev) => {
+      if (prev <= 1) {
+        setBreathPhase((prevPhase) => {
+          if (prevPhase === "inhale") return "hold";
+          if (prevPhase === "hold") return "exhale";
+          return "inhale";
+        });
+        return 4;
+      }
+      return prev - 1;
+    });
+  }, 1000);
+
+  return () => clearInterval(breathInterval);
+}, [isBreak]);
+
 
   const toggleTimer = () => setIsRunning((prev) => !prev);
   const resetTimer = () => {
