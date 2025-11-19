@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, Link} from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import Navbar from "../components/navbar";
 import Features from "./Features";
 import AuthPage from "./AuthPage";
@@ -14,14 +14,13 @@ const LandingPage: React.FC = () => (
     <h2>Find Your Flow</h2>
     <p>Guided study sessions that help you stay focused and productive.</p>
     <Link to="/account">
-    <button className="cta">Get Started</button>
+      <button className="cta">Get Started</button>
     </Link>
   </section>
 );
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
-
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -31,16 +30,17 @@ const App: React.FC = () => {
     fetchUser();
   }, []);
 
-useEffect(() => {
-  const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-    setUser(session?.user || null);
-  });
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
 
-  return () => {
-    subscription.unsubscribe();
-  };
-}, []);
-
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <>
@@ -49,7 +49,7 @@ useEffect(() => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/methods" element={<Features />} />
         <Route path="/auth" element={<AuthPage />} />
-        <Route path="/account" element={<AccountPage user={user} />} /> {/* */}
+        <Route path="/account" element={<AccountPage user={user} />} />
         <Route path="/pomodoro" element={<Pomodoro />} />
       </Routes>
     </>
@@ -57,3 +57,4 @@ useEffect(() => {
 };
 
 export default App;
+

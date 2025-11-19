@@ -11,7 +11,6 @@ export default function AuthPage() {
   const [message, setMessage] = useState<string>("");
   const navigate = useNavigate();
 
-   
   useEffect(() => {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
@@ -21,7 +20,6 @@ export default function AuthPage() {
     };
     checkSession();
 
-    
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         if (session) navigate("/account");

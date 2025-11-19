@@ -1,6 +1,7 @@
 import React from "react";
 import "../Pages/features.css";
 import { Link } from "react-router-dom";
+
 interface StudyMethod {
   name: string;
   description: string;
@@ -11,7 +12,7 @@ const studyMethods: StudyMethod[] = [
     name: "Pomodoro Technique",
     description:
       "Work in focused 25 minute intervals followed by short breaks to maintain energy and concentration.",
-  }
+  },
 ];
 
 const Methods: React.FC = () => {
@@ -27,7 +28,7 @@ const Methods: React.FC = () => {
             <h3>{method.name}</h3>
             <p>{method.description}</p>
             <Link to="/Pomodoro">
-            <button className="method-btn">Try This Method</button>
+              <button className="method-btn">Try This Method</button>
             </Link>
           </div>
         ))}
@@ -37,3 +38,4 @@ const Methods: React.FC = () => {
 };
 
 export default Methods;
+
