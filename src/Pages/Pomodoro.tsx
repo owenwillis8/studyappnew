@@ -18,50 +18,6 @@ const Pomodoro: React.FC = () => {
 
   const [showFeedback, setShowFeedback] = useState(false);
 
-  const totalMinutes = 25;
-  const user = supabase.auth.getUser();
-
-  const handleSessionEnd = () => {
-    setShowFeedback(true);
-  };
-
-  const handleFeedbackSubmit = async (answers: any) => {
-    const { data: authData } = await user;
-    if (!authData?.user) return;
-
-    await supabase.from("sessions").insert({
-      user_id: authData.user.id,
-      duration_minutes: totalMinutes,
-      ...answers,
-    });
-
-    setShowFeedback(false);
-    alert("Session saved successfully!");
-  };
-
-  const [breakTime, setBreakTime] = useState(5 * 60);
-
-  useEffect(() => {
-    let breakInterval: any;
-
-    if (isBreak) {
-      setBreakTime(5 * 60);
-
-      breakInterval = setInterval(() => {
-        setBreakTime((prev) => {
-          if (prev <= 1) {
-            clearInterval(breakInterval);
-            setIsBreak(false);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-
-    return () => clearInterval(breakInterval);
-  }, [isBreak]);
-
   useEffect(() => {
     if (isRunning && !isBreak) {
       intervalRef.current = setInterval(() => {
@@ -70,7 +26,6 @@ const Pomodoro: React.FC = () => {
             clearInterval(intervalRef.current!);
             setIsBreak(true);
             setSecondsLeft(5 * 60);
-            handleSessionEnd();
             return 0;
           }
           return prev - 1;
@@ -85,45 +40,37 @@ const Pomodoro: React.FC = () => {
 
   useEffect(() => {
     if (!audioRef.current) return;
-    if (isRunning && !isBreak) audioRef.current.play();
-    else audioRef.current.pause();
+
+    if (isRunning && !isBreak) {
+      audioRef.current.play();
+    } else {
+      audioRef.current.pause();
+    }
   }, [isRunning, isBreak]);
 
   useEffect(() => {
     if (!isBreak) return;
 
-    let totalBreakSeconds = 5 * 60;
-    setBreathPhase("inhale");
-    setBreathCounter(4);
-
     const breathInterval = setInterval(() => {
-      totalBreakSeconds--;
-
-      if (totalBreakSeconds <= 0) {
-        clearInterval(breathInterval);
-        setIsBreak(false);
-        setSecondsLeft(25 * 60);
-        setIsRunning(false);
-        return;
-      }
-
       setBreathCounter((prev) => {
         if (prev <= 1) {
-          setBreathPhase((prevPhase) => {
-            if (prevPhase === "inhale") return "hold";
-            if (prevPhase === "hold") return "exhale";
-            return "inhale";
-          });
+          if (breathPhase === "inhale") setBreathPhase("hold");
+          else if (breathPhase === "hold") setBreathPhase("exhale");
+          else if (breathPhase === "exhale") setBreathPhase("inhale");
+
           return 4;
         }
+
         return prev - 1;
       });
     }, 1000);
 
     return () => clearInterval(breathInterval);
-  }, [isBreak]);
+  }, [isBreak, breathPhase]);
 
-  const toggleTimer = () => setIsRunning((prev) => !prev);
+  const toggleTimer = () => {
+    setIsRunning((prev) => !prev);
+  };
 
   const resetTimer = () => {
     setSecondsLeft(25 * 60);
@@ -131,10 +78,26 @@ const Pomodoro: React.FC = () => {
     setIsBreak(false);
   };
 
-  const formatTime = (seconds: number) =>
-    `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(
-      seconds % 60
-    ).padStart(2, "0")}`;
+  const handleSessionEnd = () => {
+    setShowFeedback(true);
+  };
+
+  const handleFeedbackSubmit = async (answers: any) => {
+    await supabase.from("sessions").insert({
+      ...answers,
+    });
+
+    setShowFeedback(false);
+    alert("Session saved successfully!");
+  };
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  };
 
   return (
     <div className="pomodoro-page">
@@ -145,32 +108,26 @@ const Pomodoro: React.FC = () => {
       {!isBreak ? (
         <>
           <div className="timer">{formatTime(secondsLeft)}</div>
+
           <div className="controls">
             <button onClick={toggleTimer} className="cta">
               {isRunning ? "Pause" : "Start"}
             </button>
+
             <button onClick={resetTimer} className="reset-btn">
               Reset
             </button>
           </div>
         </>
       ) : (
-        <>
-          <div className="breathing-session">
-            <h3>Take a Guided Break 🌿</h3>
-            <p className="phase">{breathPhase.toUpperCase()}</p>
-            <div className={`breath-circle ${breathPhase}`}></div>
-            <p className="counter">{breathCounter}s</p>
-          </div>
+        <div className="breathing-session">
+          <h3>Take a Guided Break 🌿</h3>
+          <p className="phase">{breathPhase.toUpperCase()}</p>
 
-          <div className="break-timer">
-            <h2>Break Time</h2>
-            <p>
-              {Math.floor(breakTime / 60).toString().padStart(2, "0")}:
-              {Math.floor(breakTime % 60).toString().padStart(2, "0")}
-            </p>
-          </div>
-        </>
+          <div className={`breath-circle ${breathPhase}`} />
+
+          <p className="counter">{breathCounter}s</p>
+        </div>
       )}
 
       {showFeedback && (

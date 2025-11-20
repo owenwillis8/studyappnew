@@ -6,7 +6,12 @@ import AuthPage from "./AuthPage";
 import { supabase } from "../supabaseClient";
 import type { User } from "@supabase/supabase-js";
 import "../Pages/homepage.css";
-import Pomodoro from "../Pages/Pomodoro";
+
+import Pomodoro from "../Pages/Pomodoro.tsx";
+import Feynman from "../Pages/Feynman.tsx";
+//import SQ3R from "../Pages/SQ3R";
+//import MindMap from "../Pages/MindMap";
+
 import AccountPage from "../Pages/AccountPage";
 
 const LandingPage: React.FC = () => (
@@ -45,12 +50,23 @@ const App: React.FC = () => {
   return (
     <>
       <Navbar user={user} />
+
       <Routes>
+        {}
         <Route path="/" element={<LandingPage />} />
+
+        {}
         <Route path="/methods" element={<Features />} />
+
+        {}
         <Route path="/auth" element={<AuthPage />} />
+
+        {}
         <Route path="/account" element={<AccountPage user={user} />} />
+
+        {}
         <Route path="/pomodoro" element={<Pomodoro />} />
+        <Route path="/feynman" element={<Feynman />} />
       </Routes>
     </>
   );
