@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import "../components/SessionFeedback.css";
 interface FeedbackProps {
   onSubmit: (answers: {
     focus_quality: string;
@@ -18,9 +18,9 @@ const options = [
 
 const SessionFeedback: React.FC<FeedbackProps> = ({ onSubmit }) => {
   const [responses, setResponses] = useState({
-    focus_quality: "",
-    satisfaction: "",
-    distraction_level: "",
+    focus_quality: "...",
+    satisfaction: "...",
+    distraction_level: "...",
   });
 
   const handleChange = (field: string, value: string) => {

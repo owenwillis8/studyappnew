@@ -1,84 +1,134 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import StudySessionLayout from "../components/StudySessionsTemplate";
-import SessionFeedback from "../components/SessionFeedback";
+import "../Pages/Pomodoro.css"; 
+
+
+
+const FEYNMAN_STEPS = [
+  {
+    title: "Step 1 — Study (25 minutes)",
+    instructions:
+      "Review your material. When the timer finishes, move to the next step.",
+    duration: 25,
+  },
+  {
+    title: "Step 2 — Explain It Simply",
+    instructions:
+      "Explain the topic in simple language as if teaching a 10-year-old.",
+    duration: 10,
+  },
+  {
+    title: "Step 3 — Identify Gaps (Review)",
+    instructions:
+      "Return to your material and fill in the weak points you discovered.",
+    duration: 10,
+  },
+  {
+    title: "Step 4 — Simplify & Refine",
+    instructions:
+      "Rewrite your explanation for clarity. Remove unnecessary complexity.",
+    duration: 10,
+  },
+];
 
 const Feynman: React.FC = () => {
-  const [explanation1, setExplanation1] = useState("");
-  const [explanation2, setExplanation2] = useState("");
-  const [stage, setStage] = useState<
-    "study" | "explain1" | "review" | "explain2" | "done"
-  >("study");
+  const [step, setStep] = useState(0);
+  const current = FEYNMAN_STEPS[step];
 
-  const [showFeedback, setShowFeedback] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(current.duration * 60);
+  const [isRunning, setIsRunning] = useState(false);
 
-  const handleNext = () => {
-    if (stage === "study") setStage("explain1");
-    else if (stage === "explain1") setStage("review");
-    else if (stage === "review") setStage("explain2");
-    else if (stage === "explain2") {
-      setStage("done");
-      setShowFeedback(true);
-    }
-  };
+  
+  useEffect(() => {
+    setTimeLeft(current.duration * 60);
+    setIsRunning(false);
+  }, [step]);
 
-  const handleFeedbackSubmit = async (answers: any) => {
-    console.log("Session Feedback:", answers);
-    setShowFeedback(false);
-  };
+
+  useEffect(() => {
+    if (!isRunning || timeLeft <= 0) return;
+
+    const interval = setInterval(() => {
+      setTimeLeft((t) => t - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isRunning, timeLeft]);
+
+  
+  const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+  const seconds = String(timeLeft % 60).padStart(2, "0");
 
   return (
-    <StudySessionLayout title="Feynman Technique" durationMinutes={25}>
-      {stage === "study" && (
-        <div className="feynman-section">
-          <h3>Step 1 — Study (25 minutes)</h3>
-          <p>Begin reviewing your material. When your timer completes, press next.</p>
-          <button className="cta" onClick={handleNext}>
-            Start Explaining →
+    <StudySessionLayout
+      title="Feynman Technique"
+      durationMinutes={current.duration}
+    >
+      <div className="feynman-container">
+        {}
+        <h3 className="feynman-step-title">{current.title}</h3>
+        <p className="feynman-instructions">{current.instructions}</p>
+
+        {}
+        <div className="pomodoro-timer">
+          <span className="time">
+            {minutes}:{seconds}
+          </span>
+        </div>
+
+        {}
+        <div className="pomodoro-controls">
+          {!isRunning && (
+            <button className="cta" onClick={() => setIsRunning(true)}>
+              Start
+            </button>
+          )}
+
+          {isRunning && (
+            <button
+              className="cta"
+              onClick={() => setIsRunning(false)}
+              style={{ backgroundColor: "#FFC857" }}
+            >
+              Pause
+            </button>
+          )}
+
+          <button
+            className="cta reset-btn"
+            onClick={() => {
+              setIsRunning(false);
+              setTimeLeft(current.duration * 60);
+            }}
+          >
+            Reset
           </button>
         </div>
-      )}
 
-      {stage === "explain1" && (
-        <div className="feynman-section">
-          <h3>Step 2 — Explain the Topic</h3>
-          <textarea
-            placeholder="Explain the concept as if teaching a child..."
-            value={explanation1}
-            onChange={(e) => setExplanation1(e.target.value)}
-          />
-          <button className="cta" onClick={handleNext}>
-            Continue →
+        {}
+        {timeLeft === 0 && step < FEYNMAN_STEPS.length - 1 && (
+          <button
+            className="cta"
+            onClick={() => setStep((s) => s + 1)}
+            style={{ marginTop: "30px" }}
+          >
+            Next Step →
           </button>
-        </div>
-      )}
+        )}
 
-      {stage === "review" && (
-        <div className="feynman-section">
-          <h3>Step 3 — Review What You Missed (25 minutes)</h3>
-          <p>Study the parts you struggled to explain.</p>
-          <button className="cta" onClick={handleNext}>
-            Explain Again →
+        {}
+        {timeLeft === 0 && step === FEYNMAN_STEPS.length - 1 && (
+          <button
+            className="cta end-btn"
+            style={{ marginTop: "30px" }}
+          >
+            Complete Technique
           </button>
-        </div>
-      )}
-
-      {stage === "explain2" && (
-        <div className="feynman-section">
-          <h3>Step 4 — Final Explanation</h3>
-          <textarea
-            placeholder="Explain the topic again..."
-            value={explanation2}
-            onChange={(e) => setExplanation2(e.target.value)}
-          />
-          <button className="cta" onClick={handleNext}>
-            Finish Session →
-          </button>
-        </div>
-      )}
-
-      {showFeedback && <SessionFeedback onSubmit={handleFeedbackSubmit} />}
+        )}
+      </div>
     </StudySessionLayout>
   );
 };
 
 export default Feynman;
+

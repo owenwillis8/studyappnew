@@ -1,23 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../Pages/Pomodoro.css";
-import rainSound from "../assets/rain.mp3";
-import { supabase } from "../supabaseClient";
-import SessionFeedback from "../components/SessionFeedback";
+import StudySessionLayout from "../components/StudySessionsTemplate";
 
 const Pomodoro: React.FC = () => {
-  const [secondsLeft, setSecondsLeft] = useState(25 * 60);
+  const [secondsLeft, setSecondsLeft] = useState(25 * .5);
+  const [breakSecondsLeft, setBreakSecondsLeft] = useState(5 * 60);
   const [isRunning, setIsRunning] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [breathPhase, setBreathPhase] = useState<
     "inhale" | "hold" | "exhale"
   >("inhale");
   const [breathCounter, setBreathCounter] = useState(4);
 
-  const [showFeedback, setShowFeedback] = useState(false);
-
+  
   useEffect(() => {
     if (isRunning && !isBreak) {
       intervalRef.current = setInterval(() => {
@@ -25,7 +22,7 @@ const Pomodoro: React.FC = () => {
           if (prev <= 1) {
             clearInterval(intervalRef.current!);
             setIsBreak(true);
-            setSecondsLeft(5 * 60);
+            setBreakSecondsLeft(5 * 60); 
             return 0;
           }
           return prev - 1;
@@ -38,16 +35,27 @@ const Pomodoro: React.FC = () => {
     return () => clearInterval(intervalRef.current!);
   }, [isRunning, isBreak]);
 
+  
   useEffect(() => {
-    if (!audioRef.current) return;
+    if (!isRunning || !isBreak) return;
 
-    if (isRunning && !isBreak) {
-      audioRef.current.play();
-    } else {
-      audioRef.current.pause();
-    }
+    const id = setInterval(() => {
+      setBreakSecondsLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(id);
+          
+          setIsBreak(false);
+          setSecondsLeft(25 * 60);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(id);
   }, [isRunning, isBreak]);
 
+  
   useEffect(() => {
     if (!isBreak) return;
 
@@ -57,10 +65,8 @@ const Pomodoro: React.FC = () => {
           if (breathPhase === "inhale") setBreathPhase("hold");
           else if (breathPhase === "hold") setBreathPhase("exhale");
           else if (breathPhase === "exhale") setBreathPhase("inhale");
-
           return 4;
         }
-
         return prev - 1;
       });
     }, 1000);
@@ -74,21 +80,11 @@ const Pomodoro: React.FC = () => {
 
   const resetTimer = () => {
     setSecondsLeft(25 * 60);
+    setBreakSecondsLeft(5 * 60);
     setIsRunning(false);
     setIsBreak(false);
-  };
-
-  const handleSessionEnd = () => {
-    setShowFeedback(true);
-  };
-
-  const handleFeedbackSubmit = async (answers: any) => {
-    await supabase.from("sessions").insert({
-      ...answers,
-    });
-
-    setShowFeedback(false);
-    alert("Session saved successfully!");
+    setBreathPhase("inhale");
+    setBreathCounter(4);
   };
 
   const formatTime = (seconds: number) => {
@@ -100,40 +96,40 @@ const Pomodoro: React.FC = () => {
   };
 
   return (
-    <div className="pomodoro-page">
-      <audio ref={audioRef} src={rainSound} loop />
+    <StudySessionLayout title="Pomodoro Timer" durationMinutes={25}>
+      <div className="pomodoro-inner">
+        {!isBreak ? (
+          <>
 
-      <h2>Pomodoro Timer</h2>
+            <div className="timer">{formatTime(secondsLeft)}</div>
 
-      {!isBreak ? (
-        <>
-          <div className="timer">{formatTime(secondsLeft)}</div>
+            <div className="controls">
+              <button onClick={toggleTimer} className="cta">
+                {isRunning ? "Pause" : "Start"}
+              </button>
 
-          <div className="controls">
-            <button onClick={toggleTimer} className="cta">
-              {isRunning ? "Pause" : "Start"}
-            </button>
-
-            <button onClick={resetTimer} className="reset-btn">
-              Reset
-            </button>
-          </div>
-        </>
-      ) : (
-        <div className="breathing-session">
+              <button onClick={resetTimer} className="reset-btn">
+                Reset
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="breathing-session">
           <h3>Take a Guided Break 🌿</h3>
+
+          {}
+          <div className="break-timer">{formatTime(breakSecondsLeft)}</div>
+
           <p className="phase">{breathPhase.toUpperCase()}</p>
 
           <div className={`breath-circle ${breathPhase}`} />
 
           <p className="counter">{breathCounter}s</p>
         </div>
-      )}
 
-      {showFeedback && (
-        <SessionFeedback onSubmit={handleFeedbackSubmit} />
-      )}
-    </div>
+        )}
+      </div>
+    </StudySessionLayout>
   );
 };
 

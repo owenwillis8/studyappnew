@@ -31,7 +31,7 @@ const studyMethods: StudyMethod[] = [
     name: "SQ3R Method",
     description:
       "Improve reading retention by following the Survey, Question, Read, Recite, and Review framework.",
-    route: "/SQ3R",
+    route: "/SQ3RTechnique",
   },
 ];
 

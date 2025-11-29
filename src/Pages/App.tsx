@@ -9,7 +9,7 @@ import "../Pages/homepage.css";
 
 import Pomodoro from "../Pages/Pomodoro.tsx";
 import Feynman from "../Pages/Feynman.tsx";
-//import SQ3R from "../Pages/SQ3R";
+import SQ3RTechnique from "../Pages/SQ3RTechnique";
 //import MindMap from "../Pages/MindMap";
 
 import AccountPage from "../Pages/AccountPage";
@@ -67,6 +67,7 @@ const App: React.FC = () => {
         {}
         <Route path="/pomodoro" element={<Pomodoro />} />
         <Route path="/feynman" element={<Feynman />} />
+        <Route path="/SQ3RTechnique" element={<SQ3RTechnique />} />
       </Routes>
     </>
   );
