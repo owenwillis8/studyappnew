@@ -2,19 +2,35 @@ import React, { useEffect, useRef, useState } from "react";
 import "../Pages/Pomodoro.css";
 import StudySessionLayout from "../components/StudySessionsTemplate";
 
+/* ---------------------------------------------
+   CONSTANTS 
+---------------------------------------------- */
+const WORK_MINUTES = .05;
+const BREAK_MINUTES = 5;
+
+const WORK_SECONDS = WORK_MINUTES * 60;
+const BREAK_SECONDS = BREAK_MINUTES * 60;
+
+const BREATH_CYCLE_SECONDS = 4; 
+
+
 const Pomodoro: React.FC = () => {
-  const [secondsLeft, setSecondsLeft] = useState(25 * .5);
-  const [breakSecondsLeft, setBreakSecondsLeft] = useState(5 * 60);
+  const [secondsLeft, setSecondsLeft] = useState(WORK_SECONDS);
+  const [breakSecondsLeft, setBreakSecondsLeft] = useState(BREAK_SECONDS);
+
   const [isRunning, setIsRunning] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
+
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [breathPhase, setBreathPhase] = useState<
     "inhale" | "hold" | "exhale"
   >("inhale");
-  const [breathCounter, setBreathCounter] = useState(4);
+  const [breathCounter, setBreathCounter] = useState(BREATH_CYCLE_SECONDS);
 
-  
+  /* ---------------------------------------------
+     WORK SESSION TIMER  
+  ---------------------------------------------- */
   useEffect(() => {
     if (isRunning && !isBreak) {
       intervalRef.current = setInterval(() => {
@@ -22,7 +38,7 @@ const Pomodoro: React.FC = () => {
           if (prev <= 1) {
             clearInterval(intervalRef.current!);
             setIsBreak(true);
-            setBreakSecondsLeft(5 * 60); 
+            setBreakSecondsLeft(BREAK_SECONDS);
             return 0;
           }
           return prev - 1;
@@ -35,7 +51,9 @@ const Pomodoro: React.FC = () => {
     return () => clearInterval(intervalRef.current!);
   }, [isRunning, isBreak]);
 
-  
+  /* ---------------------------------------------
+     BREAK TIMER  
+  ---------------------------------------------- */
   useEffect(() => {
     if (!isRunning || !isBreak) return;
 
@@ -43,9 +61,8 @@ const Pomodoro: React.FC = () => {
       setBreakSecondsLeft((prev) => {
         if (prev <= 1) {
           clearInterval(id);
-          
           setIsBreak(false);
-          setSecondsLeft(25 * 60);
+          setSecondsLeft(WORK_SECONDS);
           return 0;
         }
         return prev - 1;
@@ -55,7 +72,9 @@ const Pomodoro: React.FC = () => {
     return () => clearInterval(id);
   }, [isRunning, isBreak]);
 
-  
+  /* ---------------------------------------------
+     BREATHING CYCLE  
+  ---------------------------------------------- */
   useEffect(() => {
     if (!isBreak) return;
 
@@ -64,8 +83,9 @@ const Pomodoro: React.FC = () => {
         if (prev <= 1) {
           if (breathPhase === "inhale") setBreathPhase("hold");
           else if (breathPhase === "hold") setBreathPhase("exhale");
-          else if (breathPhase === "exhale") setBreathPhase("inhale");
-          return 4;
+          else setBreathPhase("inhale");
+
+          return BREATH_CYCLE_SECONDS;
         }
         return prev - 1;
       });
@@ -74,17 +94,20 @@ const Pomodoro: React.FC = () => {
     return () => clearInterval(breathInterval);
   }, [isBreak, breathPhase]);
 
+  /* ---------------------------------------------
+     BUTTON HANDLERS  
+  ---------------------------------------------- */
   const toggleTimer = () => {
     setIsRunning((prev) => !prev);
   };
 
   const resetTimer = () => {
-    setSecondsLeft(25 * 60);
-    setBreakSecondsLeft(5 * 60);
+    setSecondsLeft(WORK_SECONDS);
+    setBreakSecondsLeft(BREAK_SECONDS);
     setIsRunning(false);
     setIsBreak(false);
     setBreathPhase("inhale");
-    setBreathCounter(4);
+    setBreathCounter(BREATH_CYCLE_SECONDS);
   };
 
   const formatTime = (seconds: number) => {
@@ -95,12 +118,14 @@ const Pomodoro: React.FC = () => {
     return `${m}:${s}`;
   };
 
+  /* ---------------------------------------------
+     RENDER  
+  ---------------------------------------------- */
   return (
-    <StudySessionLayout title="Pomodoro Timer" durationMinutes={25}>
+    <StudySessionLayout title="Pomodoro Timer" durationMinutes={WORK_MINUTES}>
       <div className="pomodoro-inner">
         {!isBreak ? (
           <>
-
             <div className="timer">{formatTime(secondsLeft)}</div>
 
             <div className="controls">
@@ -115,18 +140,16 @@ const Pomodoro: React.FC = () => {
           </>
         ) : (
           <div className="breathing-session">
-          <h3>Take a Guided Break 🌿</h3>
+            <h3>Take a Guided Break 🌿</h3>
 
-          {}
-          <div className="break-timer">{formatTime(breakSecondsLeft)}</div>
+            <div className="break-timer">{formatTime(breakSecondsLeft)}</div>
 
-          <p className="phase">{breathPhase.toUpperCase()}</p>
+            <p className="phase">{breathPhase.toUpperCase()}</p>
 
-          <div className={`breath-circle ${breathPhase}`} />
+            <div className={`breath-circle ${breathPhase}`} />
 
-          <p className="counter">{breathCounter}s</p>
-        </div>
-
+            <p className="counter">{breathCounter}s</p>
+          </div>
         )}
       </div>
     </StudySessionLayout>
@@ -134,4 +157,5 @@ const Pomodoro: React.FC = () => {
 };
 
 export default Pomodoro;
+
 

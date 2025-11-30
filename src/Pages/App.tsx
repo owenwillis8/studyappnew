@@ -3,16 +3,19 @@ import { Routes, Route, Link } from "react-router-dom";
 import Navbar from "../components/navbar";
 import Features from "./Features";
 import AuthPage from "./AuthPage";
+import About from "./About"
 import { supabase } from "../supabaseClient";
 import type { User } from "@supabase/supabase-js";
 import "../Pages/homepage.css";
 
+
 import Pomodoro from "../Pages/Pomodoro.tsx";
 import Feynman from "../Pages/Feynman.tsx";
 import SQ3RTechnique from "../Pages/SQ3RTechnique";
-//import MindMap from "../Pages/MindMap";
+import MindMap from "../Pages/MindMap";
 
 import AccountPage from "../Pages/AccountPage";
+
 
 const LandingPage: React.FC = () => (
   <section className="hero">
@@ -54,7 +57,8 @@ const App: React.FC = () => {
       <Routes>
         {}
         <Route path="/" element={<LandingPage />} />
-
+        {}
+        <Route path="/about" element={<About />} />
         {}
         <Route path="/methods" element={<Features />} />
 
@@ -68,6 +72,7 @@ const App: React.FC = () => {
         <Route path="/pomodoro" element={<Pomodoro />} />
         <Route path="/feynman" element={<Feynman />} />
         <Route path="/SQ3RTechnique" element={<SQ3RTechnique />} />
+        <Route path="/MindMap" element={<MindMap />} />
       </Routes>
     </>
   );

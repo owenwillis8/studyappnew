@@ -120,6 +120,8 @@
   padding: 12px;
   font-size: 1rem;
   border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
   border: none;
   outline: none;
   resize: none;
@@ -167,4 +169,96 @@
 .controls .cta,
 .controls .reset-btn {
   margin: 0;
+}
+
+.mindmap-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+.mindmap-textarea {
+  width: 90%;
+  max-width: 650px;
+  height: 160px;
+  padding: 14px;
+  margin: 24px auto;
+  display: block;
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  border-radius: 12px;
+  resize: none;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.mindmap-graphic-wrapper {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mindmap-graphic {
+  position: relative;
+  width: 700px;
+  max-width: 95vw;
+  min-height: 380px;
+  padding: 32px;
+  border-radius: 24px;
+  background: radial-gradient(circle at top, #1e293b, #020617 55%);
+  border: 1px solid rgba(148, 163, 255, 0.35);
+  box-shadow: 0 0 35px rgba(59, 130, 246, 0.45);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 24px;
+}
+
+.mindmap-node {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(129, 140, 248, 0.7);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.45);
+  color: #e5e7eb;
+}
+
+.mindmap-branches {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+
+.branch-node {
+  background: rgba(30, 64, 175, 0.9);
+  border-color: rgba(129, 140, 248, 0.9);
+}
+
+.mindmap-details {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px dashed rgba(148, 163, 255, 0.5);
+  color: #d1d5db;
+}
+
+.mindmap-notes {
+  margin-top: 32px;
+  padding: 20px;
+  width: 90%;
+  max-width: 700px;
+  background: rgba(15, 23, 42, 0.85);
+  border-radius: 16px;
+  border: 1px solid rgba(129, 140, 248, 0.55);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.35);
+}
+
+.mindmap-notes h3 {
+  color: #93c5fd;
+  margin-bottom: 12px;
+}
+
+.nested-list {
+  padding-left: 24px;
 }
