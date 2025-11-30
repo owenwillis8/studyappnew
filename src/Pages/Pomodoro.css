@@ -262,3 +262,22 @@
 .nested-list {
   padding-left: 24px;
 }
+
+.review-box {
+  max-width: 700px;
+  margin: 0 auto;
+  margin-top: 30px;
+  text-align: left;
+}
+
+.review-text {
+  white-space: pre-wrap;      
+  word-wrap: break-word;      
+  overflow-wrap: break-word;
+  font-size: 1rem;
+  line-height: 1.6;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

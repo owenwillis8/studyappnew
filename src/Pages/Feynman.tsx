@@ -5,14 +5,11 @@ import "../Pages/Pomodoro.css";
 /* --------------------------------------------------------
    CONSTANTS
 --------------------------------------------------------- */
-const FEYNMAN_STUDY_MINUTES = .05;
-const FEYNMAN_REVIEW_MINUTES = .05;
+const FEYNMAN_STUDY_MINUTES = 0.05;
+const FEYNMAN_REVIEW_MINUTES = 0.05;
 
-
-
-
-const STUDY_SECONDS = FEYNMAN_STUDY_MINUTES * 60
-const REVIEW_SECONDS = FEYNMAN_REVIEW_MINUTES * 60
+const STUDY_SECONDS = FEYNMAN_STUDY_MINUTES * 60;
+const REVIEW_SECONDS = FEYNMAN_REVIEW_MINUTES * 60;
 
 /* --------------------------------------------------------
    STEP CONFIG
@@ -37,14 +34,14 @@ const FEYNMAN_STEPS = [
     instructions:
       "Review your simple explanation and revisit the material to fill in weak points.",
     durationSeconds: REVIEW_SECONDS,
-    showTextBox: false, 
+    showTextBox: false,
   },
   {
     title: "Step 4 — Simplify & Refine",
     instructions:
       "Rewrite your explanation for clarity. Remove unnecessary complexity.",
     durationSeconds: 0,
-    showTextBox: true, 
+    showTextBox: true,
   },
 ];
 
@@ -55,20 +52,17 @@ const Feynman: React.FC = () => {
   const [step, setStep] = useState(0);
   const current = FEYNMAN_STEPS[step];
 
-  
   const [explanationStep2, setExplanationStep2] = useState("");
   const [explanationStep4, setExplanationStep4] = useState("");
 
   const [timeLeft, setTimeLeft] = useState(current.durationSeconds);
   const [isRunning, setIsRunning] = useState(false);
 
-  
   useEffect(() => {
     setTimeLeft(current.durationSeconds);
     setIsRunning(false);
   }, [step, current.durationSeconds]);
 
-  
   useEffect(() => {
     if (!isRunning || timeLeft <= 0) return;
 
@@ -76,18 +70,15 @@ const Feynman: React.FC = () => {
     return () => clearInterval(interval);
   }, [isRunning, timeLeft]);
 
-  
   useEffect(() => {
     if (step === 3 && explanationStep4 === "") {
       setExplanationStep4(explanationStep2);
     }
   }, [step]);
 
-  
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
-  
   const getTextBinding = () => {
     if (step === 1)
       return { value: explanationStep2, setter: setExplanationStep2 };
@@ -107,7 +98,7 @@ const Feynman: React.FC = () => {
         <h3 className="feynman-step-title">{current.title}</h3>
         <p className="feynman-instructions">{current.instructions}</p>
 
-        {}
+        {/* STEP 2 + STEP 4 TEXT BOX */}
         {current.showTextBox && (
           <textarea
             className="mindmap-textarea"
@@ -117,7 +108,21 @@ const Feynman: React.FC = () => {
           />
         )}
 
-        {}
+        {/* ----------------------------- */}
+        {/* STEP 3 — DISPLAY EXPLANATION */}
+        {/* ----------------------------- */}
+        {step === 2 && (
+          <div className="review-box" style={{ marginTop: "30px" }}>
+            <h4>Your Explanation from Step 2</h4>
+            <p className="review-text">
+              {explanationStep2
+                ? explanationStep2
+                : "No explanation written yet."}
+            </p>
+          </div>
+        )}
+
+        {/* TIMER FOR STEP 1 & 3 */}
         {current.durationSeconds > 0 && (
           <>
             <div className="pomodoro-timer">
@@ -156,7 +161,7 @@ const Feynman: React.FC = () => {
           </>
         )}
 
-        {}
+        {/* NEXT STEP BUTTON */}
         {(current.durationSeconds === 0 || timeLeft === 0) &&
           step < FEYNMAN_STEPS.length - 1 && (
             <button
